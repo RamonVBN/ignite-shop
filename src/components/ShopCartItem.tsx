@@ -1,6 +1,5 @@
 import { ShopCartDetails, ShopCartImage, ShopCartItemContainer } from "@/styles/pages/app";
 import Image from "next/image";
-import imageExample from '../assets/Type=2_explorer-t-shirt 1.png'
 import { useContext } from "react";
 import { ShopCartContext } from "@/contexts/ShopCartContext";
 

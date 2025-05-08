@@ -4,6 +4,7 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 import Stripe from "stripe";
 
 interface SuccessProps  {
@@ -14,6 +15,13 @@ interface SuccessProps  {
 
 export default function Success({customerName, productsImages, quantity}: SuccessProps){
 
+
+    useEffect(() => {
+
+    localStorage.removeItem('@ignite-shop:shopCartItems')
+    localStorage.removeItem('@ignite-shop:lineItems')
+
+    }, [])
 
     return (
         <>
