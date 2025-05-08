@@ -1,10 +1,8 @@
 import { ImageContainer, ProdcutDetails, ProductContainer } from "@/styles/pages/product";
-import camisetaExemplo from '../../assets/Type=+PLUS-T-shirttransparente 1.png'
 import Image from "next/image";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { stripe } from "@/lib/stripe";
 import Stripe from "stripe";
-import axios from "axios";
 import { useContext, useState } from "react";
 import Head from "next/head";
 import { ShopCartContext } from "@/contexts/ShopCartContext";
@@ -23,32 +21,17 @@ interface ProductProps {
 
 export default function Product({product}: ProductProps){
 
-    const [isAddingItem, setIsAddingItem] = useState(false)
-
-    const {addProduct} = useContext(ShopCartContext)
+    const {addProduct, isAddingItem} = useContext(ShopCartContext)
 
     async function handleAddProduct(){
 
-        try {
-            setIsAddingItem(true)
-
-            setTimeout(() => {
-                addProduct({
-                    name: product.name,
-                    imageUrl: product.imageUrl,
-                    price: product.price,
-                    defaultPriceId: product.defaultPriceId,
-                    quantity: 1,
-                })
-
-                setIsAddingItem(false)
-            }, 600);
-            
-        } catch (error) {
-            
-            console.log(error)
-        }
-
+        addProduct({
+            name: product.name,
+            imageUrl: product.imageUrl,
+            price: product.price,
+            defaultPriceId: product.defaultPriceId,
+            quantity: 1,
+        })
         
     }
 

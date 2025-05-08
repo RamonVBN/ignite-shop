@@ -21,6 +21,7 @@ type ShopCartContextProps = {
     removeProduct: (priceId: string) => void
     handleBuyProduct: () => void
     isCreatingCheckout: boolean
+    isAddingItem: boolean
 }
 
 export const ShopCartContext = createContext({} as ShopCartContextProps )
@@ -31,28 +32,39 @@ export function ShopCartProvider({children}: {children: ReactNode}){
     const [lineItems, setLineItems] = useState<LineItem[]>([])
     const [isCreatingCheckout, setIsCreatingCheckout] = useState(false)
 
+    const [isAddingItem, setIsAddingItem] = useState(false)
+
     function addProduct(shopCartItem: ShopCartItemProps){
-        
-        const sameItemIndex = shopCartItems.findIndex((item) =>  item.defaultPriceId === shopCartItem.defaultPriceId)
+
+        try {
+        setIsAddingItem(true)
+
+        setTimeout(() => {
+            const sameItemIndex = shopCartItems.findIndex((item) =>  item.defaultPriceId === shopCartItem.defaultPriceId)
 
         if (sameItemIndex !== -1) {
 
             shopCartItems[sameItemIndex].quantity += 1
             setShopCartItems((prevState) => [...prevState])
-
+        
             lineItems[sameItemIndex].quantity += 1
             setLineItems((prevState) => [...prevState])
-           
+        
         }else {
-
             setShopCartItems((prevState) => [...prevState, shopCartItem])
-
             setLineItems((prevState) => [...prevState, {
                 price: shopCartItem.defaultPriceId,
                 quantity: shopCartItem.quantity
             }])
+        } 
+        
+        setIsAddingItem(false)
+        }, 600);
+        
+        } catch (error) {
+            console.log(error)
         }
-
+       
     }
 
     function removeProduct(priceId: string){
@@ -101,15 +113,28 @@ export function ShopCartProvider({children}: {children: ReactNode}){
         }
     }
 
-    // useEffect(() => {
+    useEffect(() => {
+        
+        const cloudShopCartItems = localStorage.getItem('@ignite-shop:shopCartItems')
+        const cloudLineItems = localStorage.getItem('@ignite-shop:lineItems')
 
-    //     console.log(shopCartItems.length)
-    //     // console.log(lineItems)
+        if (cloudShopCartItems && cloudLineItems) {
+            
+            setShopCartItems(JSON.parse(cloudShopCartItems))
+            setLineItems(JSON.parse(cloudLineItems))
+        }
 
-    // }, [shopCartItems, lineItems])
+    }, [])
+
+    useEffect(() => {
+
+        localStorage.setItem('@ignite-shop:shopCartItems', JSON.stringify(shopCartItems))
+        localStorage.setItem('@ignite-shop:lineItems', JSON.stringify(lineItems))
+
+    }, [shopCartItems, lineItems])
 
     return (
-        <ShopCartContext.Provider value={{shopCartItems, addProduct, removeProduct, handleBuyProduct, isCreatingCheckout}}>
+        <ShopCartContext.Provider value={{shopCartItems, addProduct, removeProduct, handleBuyProduct, isCreatingCheckout, isAddingItem}}>
             {children}
         </ShopCartContext.Provider>
     )

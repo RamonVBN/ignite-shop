@@ -80,8 +80,9 @@ export const Product = styled(Link, {
 })
 
 
-export const AddProductSlideButton = styled('span', {
+export const AddProductSlideButton = styled('button', {
 
+    all: 'unset',
     boxSizing: 'border-box',
     backgroundColor: '$green500',
     borderRadius: 6,
@@ -103,12 +104,18 @@ export const AddProductSlideButton = styled('span', {
 
     },
 
-    '&:hover': {
+    '&:not(:disabled):hover': {
         backgroundColor: '$white',
 
         svg: {
             color: '$green500',
     
         },
+    },
+
+    '&:disabled': {
+        opacity: 0.75,
+        cursor: 'progress'
     }
+    
 })

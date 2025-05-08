@@ -10,6 +10,8 @@ import { stripe } from "@/lib/stripe"
 import Stripe from "stripe"
 
 import { Handbag } from "phosphor-react"
+import { useContext, useEffect, useState } from "react"
+import { ShopCartContext } from "@/contexts/ShopCartContext"
 
 
 
@@ -26,6 +28,7 @@ interface HomeProps {
 
 export default function Home({products}: HomeProps) {
 
+  const {addProduct, isAddingItem} = useContext(ShopCartContext)
 
   const [sliderRef] = useKeenSlider<HTMLDivElement>({
     initial: 0,
@@ -40,6 +43,14 @@ export default function Home({products}: HomeProps) {
     
   })
 
+  const [isLinkActive, setIsisLinkActive] = useState(false)
+
+
+  useEffect(() => {
+    
+    console.log(isLinkActive)
+
+  }, [isLinkActive])
 
   return (
   <>
@@ -51,16 +62,21 @@ export default function Home({products}: HomeProps) {
       {
         products && products.map((product, i) => {
           return (
-        <Product prefetch={false} href={`/product/${product.id}`} key={product.id} className={`keen-slider__slide number-slide${i + 1}`} >
+        <Product prefetch={false} href={!isLinkActive ? `/product/${product.id}`: ''} key={product.id} className={`keen-slider__slide number-slide${i + 1}`} >
           <Image src={product.imageUrl} alt="" width={520} height={480}/>
-          <footer>
+          <footer onMouseOver={() => setIsisLinkActive(true)} onMouseLeave={() => setIsisLinkActive(false)}>
             <div>
               <strong>{product.name}</strong>
               <span>{product.price}</span>
             </div>
             
-          <AddProductSlideButton>
-
+          <AddProductSlideButton disabled={isAddingItem} onClick={() => addProduct({
+            defaultPriceId: product.defaultPriceId,
+            imageUrl: product.imageUrl,
+            name: product.name,
+            price: product.price,
+            quantity: 1
+          })}>
             <Handbag size={32}/>
           </AddProductSlideButton>
           </footer>
